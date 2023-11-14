@@ -2,8 +2,6 @@
 #include <cmath>
 #include <stdexcept>
 #include <iostream>
-#include <utility>
-#include <memory>
 #include <random>
 #include <complex>
 #include <LinkedList/LinkedList.h>
@@ -135,7 +133,7 @@ LinkedList<T>::LinkedList(size_t size, T& low, T& high) : _size(size), _head(nul
         throw std::invalid_argument("High < low");
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(low, high);
+    std::uniform_real_distribution<T> dis(low, high);
     _head = new Node;
     _head->data = dis(gen);
     Node* tmp = _head;

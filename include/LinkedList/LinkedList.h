@@ -2,15 +2,9 @@
 #include <cmath>
 #include <stdexcept>
 #include <iostream>
-#include <utility>
-#include <memory>
-#include <windows.h>
 #include <random>
 #include <complex>
 
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
 using namespace std;
 
 
@@ -103,7 +97,6 @@ public:
     void push_tail(T& value) {
         Node* item = new Node();
         item->data = value;
-        item->ind = _size;
         if (!_head) {
             _head = item;
             _head->next = _head;
@@ -117,6 +110,26 @@ public:
         }
         tmp->next = item;
         ++_size;
+    }
+
+    void push_tail_ind(T& value, size_t ind) {
+        Node* item = new Node();
+        item->data = value;
+        item->ind = ind;
+        if (!_head) {
+            _head = item;
+            _head->next = _head;
+            ++_size;
+            return;
+        }
+        item->next = _head;
+        Node* tmp = _head;
+        while (tmp->next != _head) {
+            tmp = tmp->next;
+        }
+        tmp->next = item;
+        ++_size;
+
     }
 
     void push_tail(LinkedList Other) {
@@ -154,7 +167,6 @@ public:
         tmp->next = item;
         _head = item;
         ++_size;
-        renumber();
     }
 
     void push_head(LinkedList Other) {
@@ -173,7 +185,6 @@ public:
         tmp2->next = _head;
         _head = tmp2;
         _size += Other._size;
-        renumber();
     }
 
     void pop_head() {
@@ -186,7 +197,6 @@ public:
         tmp_end->next = tmp;
         _head = tmp;
         --_size;
-        renumber();
     }
     void pop_tail() {
         if (!_head)
@@ -201,7 +211,6 @@ public:
 
     void delete_nodes(T& value);
 
-    void delete_nulls();
 
     friend ostream& operator<<(std::ostream& os, const LinkedList<T>& List) {
         if (List._head == nullptr) {
@@ -246,16 +255,16 @@ void LinkedList<T>::delete_nodes(T& value) {
     if (!_head) {
         return;
     }
-    Node* head = _head->next, * previous = _head;
+    Node* checked = _head->next, * previous = _head;
     for (size_t i = 0; i <= _size; ++i) {
-        if (head->data == value) {
-            previous->next = head->next;
-            delete head;
-            head = previous->next;
+        if (checked->data == value) {
+            previous->next = checked->next;
+            delete checked;
+            checked = previous->next;
             --_size;
         }
         else {
-            head = head->next;
+            checked = checked->next;
             previous = previous->next;
         }
     }
@@ -265,39 +274,12 @@ void LinkedList<T>::delete_nodes(T& value) {
         _head = previous->next;
         --_size;
     }
-    renumber();
-}
-template<typename T>
-void LinkedList<T>::delete_nulls() {
-    if (!_head) {
-        return;
-    }
-    T val_null = 0;
-    Node* head = _head->next, * previous = _head;
-    for (size_t i = 0; i <= _size; ++i) {
-        if (head->data == val_null) {
-            previous->next = head->next;
-            delete head;
-            head = previous->next;
-            --_size;
-        }
-        else {
-            head = head->next;
-            previous = previous->next;
-        }
-    }
-    if (_head->data == val_null) {
-        previous->next = _head->next;
-        delete _head;
-        _head = previous->next;
-        --_size;
-    }
 }
 
 template<typename T>
-T& representation_polynomial(LinkedList<T> List, T x) {
-    List.delete_nulls();
+T& representation_polynomial(LinkedList<T>& List, T& x) {
     T sum = 0;
+    List.delete_nodes(sum);
     for (size_t i = 0; i < List.get_size(); ++i) {
         sum += List[i] * pow(x, List.get_ind(i));
     }

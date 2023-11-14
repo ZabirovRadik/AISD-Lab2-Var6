@@ -7,6 +7,7 @@ TEST(DoubleConstructers, MethodTests) {
     double d_min = -100, d_max = 100;
     LinkedList<double> List3(10, d_min, d_max);
     LinkedList<double> List4(List3);
+    List3 = List4;
     cout << List3;
     for (size_t i = 0; i < List3.get_size(); ++i) {
         cout << List3[i] << ";  ";
@@ -91,11 +92,11 @@ TEST(DeleteWithCertainValue, MethodTests) {
 TEST(Example1, TaskTest) {
     double first = 10, second = 20.10, third = 30.20, last = 40.30, null = 0;
     LinkedList<double> List;
-    List.push_head(second);
-    List.push_head(null);
-    List.push_head(first);
-    List.push_tail(third);
-    List.push_tail(last);
+    List.push_tail_ind(first, 1);
+    List.push_tail_ind(second, 2);
+    List.push_tail_ind(third, 3);
+    List.push_tail_ind(last, 4);
     cout << List;
-    EXPECT_DOUBLE_EQ(representation_polynomial<double>(List, 2),976.8);
+    double val = 2;
+    EXPECT_DOUBLE_EQ(representation_polynomial<double>(List, val), 986.8);
 }
